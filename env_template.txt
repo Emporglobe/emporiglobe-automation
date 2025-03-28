@@ -1,0 +1,6 @@
+# EmporiGlobe .env template
+SHOPIFY_API_KEY=your_key
+SHOPIFY_ACCESS_TOKEN=your_token
+GPT_API_KEY=your_openai_key
+GMAIL_USER=your_gmail
+GMAIL_PASS=your_gmail_app_password
