@@ -1,0 +1,102 @@
+{
+    "name": "EmporiGlobe - Shopify to TikTok Flow (v1.83.2 Safe)",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "GET",
+                "url": "https://emporiglobe.myshopify.com/admin/api/2023-10/products.json",
+                "authentication": "headerAuth",
+                "options": {}
+            },
+            "id": "1",
+            "name": "Get Products from Shopify",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ],
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "1",
+                    "name": "Shopify Access Token"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "functionCode": "// Pick a random product\nconst items = items[0].json.products;\nconst randomProduct = items[Math.floor(Math.random() * items.length)];\nreturn [{ json: randomProduct }];"
+            },
+            "id": "2",
+            "name": "Pick Random Product",
+            "type": "n8n-nodes-base.function",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "functionCode": "// Generate simple caption\nconst product = item;\nconst caption = `\ud83d\udc3e Check out our ${product.title}! Only ${product.variants[0].price} RON. Available now at EmporiGlobe.com! #pettoys #emporiglobe #shopnow`;\nreturn [{ json: { ...product, caption } }];"
+            },
+            "id": "3",
+            "name": "Generate Caption",
+            "type": "n8n-nodes-base.function",
+            "typeVersion": 1,
+            "position": [
+                650,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "fileName": "captions.csv",
+                "options": {}
+            },
+            "id": "4",
+            "name": "Export CSV",
+            "type": "n8n-nodes-base.csvFile",
+            "typeVersion": 1,
+            "position": [
+                850,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Get Products from Shopify": {
+            "main": [
+                [
+                    {
+                        "node": "Pick Random Product",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Pick Random Product": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Caption",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Caption": {
+            "main": [
+                [
+                    {
+                        "node": "Export CSV",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

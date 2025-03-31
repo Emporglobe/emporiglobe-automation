@@ -1,0 +1,73 @@
+{
+  "name": "EmporiGlobe Automation Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "apiKey",
+        "httpMethod": "GET",
+        "url": "https://emporiglobe.com/products.json",
+        "options": {}
+      },
+      "name": "Fetch Shopify Products",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "prompt": "Write a friendly Instagram caption for a pet product:",
+        "temperature": 0.7,
+        "maxTokens": 100
+      },
+      "name": "Generate Caption (GPT)",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "emporiglobe@gmail.com",
+        "toEmail": "emporiglobe@gmail.com",
+        "subject": "Daily Post Summary",
+        "text": "New post ready: {{ $json[\"caption\"] }}"
+      },
+      "name": "Send Gmail Summary",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [
+        750,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Fetch Shopify Products": {
+      "main": [
+        [
+          {
+            "node": "Generate Caption (GPT)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Caption (GPT)": {
+      "main": [
+        [
+          {
+            "node": "Send Gmail Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
